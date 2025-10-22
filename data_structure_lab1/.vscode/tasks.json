@@ -1,0 +1,83 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build C++",
+      "type": "shell",
+      "command": "g++",
+      "args": [
+        "-g",
+        "-std=c++17",
+        "${file}",
+        "-o",
+        "${fileDirname}/build/${fileBasenameNoExtension}"
+      ],
+      "options": {
+        "cwd": "${fileDirname}"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "dependsOrder": "sequence",
+      "dependsOn": "Create build directory"
+    },
+    {
+      "label": "Build C",
+      "type": "shell", 
+      "command": "gcc",
+      "args": [
+        "-g",
+        "-std=c17",
+        "${file}",
+        "-o",
+        "${fileDirname}/build/${fileBasenameNoExtension}"
+      ],
+      "options": {
+        "cwd": "${fileDirname}"
+      },
+      "group": "build",
+      "dependsOrder": "sequence",
+      "dependsOn": "Create build directory"
+    },
+    {
+      "label": "Run C++",
+      "type": "shell",
+      "command": "${fileDirname}/build/${fileBasenameNoExtension}",
+      "args": ["${input:programArgs}"],
+      "options": {
+        "cwd": "${fileDirname}"
+      },
+      "dependsOrder": "sequence",
+      "dependsOn": "Build C++"
+    },
+    {
+      "label": "Run C",
+      "type": "shell",
+      "command": "${fileDirname}/build/${fileBasenameNoExtension}",
+      "args": ["${input:programArgs}"],
+      "options": {
+        "cwd": "${fileDirname}"
+      },
+      "dependsOrder": "sequence", 
+      "dependsOn": "Build C"
+    },
+    {
+      "label": "Create build directory",
+      "type": "shell",
+      "command": "mkdir",
+      "args": ["-p", "build"],
+      "options": {
+        "cwd": "${fileDirname}"
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "id": "programArgs",
+      "type": "promptString",
+      "description": "程序参数（可为空）",
+      "default": ""
+    }
+  ]
+}
