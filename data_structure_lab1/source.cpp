@@ -46,15 +46,15 @@ public:
             cout << "Error!!! You have not initialized your array yet!" << endl;
             return;
         }
-        int *newarr = new int[this->size + 1];
+        int *newarr = new int[this->size + 1]; // 开辟新空间用于操作
         for (int i = 0; i < this->size; i++)
         {
             newarr[i] = this->arr[i];
         }
         newarr[this->size] = x;
         this->size++;
-        delete[] this->arr;
-        this->arr = newarr;
+        delete[] this->arr; // 释放原本的空间
+        this->arr = newarr; // 将新空间放入arr位置
         this->show();
     }
     void pop_back()
@@ -140,8 +140,8 @@ public:
             cout << "Error!!! You have not initialized your array yet!" << endl;
             return;
         }
-        char root[10] = "./output/";
-        char *fullpath = new char[9 + length + 1];
+        char root[10] = "./output/"; // 根目录
+        char *fullpath = new char[9 + length + 1]; // filename和root拼到一起，再留出来\0的位置
         for (int i = 0; i < 9; i++)
         {
             fullpath[i] = root[i];
@@ -151,7 +151,7 @@ public:
             fullpath[i] = filename[i - 9];
         }
         fullpath[9 + length] = '\0'; 
-        if (filename[length - 1] == 't')
+        if (filename[length - 1] == 't') // txt文件输出
         {
             ofstream fout(fullpath);
             fout << this->size << endl;
@@ -163,7 +163,7 @@ public:
             }
             fout.close();
         }
-        else
+        else // bin文件输出
         {
             ofstream fout(fullpath, ios::binary);
             fout.write((char *)&this->size, sizeof(int));
@@ -201,7 +201,7 @@ save filename
 exit
 */
 
-bool cmp(char* string1,char* string2,int length)
+bool cmp(char* string1,char* string2,int length) // 自定义strncmp
 {
     for(int i=0;i<length;i++)
     {
@@ -210,7 +210,7 @@ bool cmp(char* string1,char* string2,int length)
     return true;
 }
 
-int matching_mode(char *func_name, int size)
+int matching_mode(char *func_name, int size) // 函数名匹配
 {
     if(size==4)
     {
@@ -256,7 +256,7 @@ int matching_mode(char *func_name, int size)
     }
 }
 
-int charToint(char *p, int size)
+int charToint(char *p, int size) // 用于把参数字符串转换成数字
 {
     int num = 0;
     for (int i = 0; i < size; i++)
@@ -290,9 +290,9 @@ int main()
     }
     cout<<"open successfully !!!\n";
     int cur_size;
-    if (flag == 1)
+    if (flag == 1) // txt直接输入
         f >> cur_size;
-    else
+    else // bin需要按字节输入
         f.read((char *)&cur_size, sizeof(int));
     my.setsize(cur_size);
     int *p = new int[cur_size];
@@ -310,19 +310,19 @@ int main()
             f.read((char *)&p[i], sizeof(int));
         }
     }
-    my.inital_arr(p);
+    my.inital_arr(p); // 初始化数组
     delete[] p;
     f.close();
     int loop_count=0;
     while (1)
     {
-        char instruction[1000];
+        char instruction[1000]; // 指令字符串
         cout << "请输入：" << endl;
         if(loop_count==0) cin.ignore();
         cin.getline(instruction, 1000);
         // cout<<instruction<<endl;
-        char func_name[1000] = {0}, op1[1000] = {0}, op2[1000] = {0};
-        int id1 = 0, id2 = 0, id3 = 0;
+        char func_name[1000] = {0}, op1[1000] = {0}, op2[1000] = {0}; // 函数名 参数1 参数2
+        int id1 = 0, id2 = 0, id3 = 0; // 函数名长度 参数1长度 参数2长度
         int face_blank = 0;
         for (int i = 0; instruction[i] != '\0'; i++)
         {
@@ -333,19 +333,19 @@ int main()
             }
             switch (face_blank)
             {
-            case 0:
+            case 0: // 还在输入函数名
             {
                 func_name[id1] = instruction[i];
                 id1++;
                 break;
             }
-            case 1:
+            case 1: // 还在输入参数1
             {
                 op1[id2] = instruction[i];
                 id2++;
                 break;
             }
-            case 2:
+            case 2: // 还在输入参数2
             {
                 op2[id3] = instruction[i];
                 id3++;
@@ -353,34 +353,34 @@ int main()
             }
             }
         }
-        switch (matching_mode(func_name, id1))
+        switch (matching_mode(func_name, id1)) // 根据函数名匹配对应方法
         {
-        case 1:
+        case 1: // size
         {
             // cout<<"1"<<endl;
             my.getsize();
             break;
         }
-        case 2:
+        case 2: // show
         {
             // cout<<"2"<<endl;
             my.show();
             break;
         }
-        case 3:
+        case 3: // push_back x
         {
             // cout<<"3"<<endl;
             int val = charToint(op1, id2);
             my.push_back_x(val);
             break;
         }
-        case 4:
+        case 4: // pop_back 
         {
             // cout<<"4"<<endl;
             my.pop_back();
             break;
         }
-        case 5:
+        case 5: // insert pos x
         {
             // cout<<"5"<<endl;
             int pos = charToint(op1, id2);
@@ -388,14 +388,14 @@ int main()
             my.insert(pos, val);
             break;
         }
-        case 6:
+        case 6: // erase pos
         {
             // cout<<"6"<<endl;
             int pos = charToint(op1, id2);
             my.erase(pos);
             break;
         }
-        case 7:
+        case 7:  // update pos x
         {
             // cout<<"7"<<endl;
             int pos = charToint(op1, id2);
@@ -403,13 +403,13 @@ int main()
             my.update(pos, val);
             break;
         }
-        case 8:
+        case 8: // save filename
         {
             // cout<<"8"<<endl;
             my.save(op1, id2);
             break;
         }
-        case 9:
+        case 9: // exit
         {
             // cout<<"9"<<endl;
             cout << "程序运行结束" << endl;
@@ -422,7 +422,7 @@ int main()
         }
         cout<<"完成了一次操作!按Enter键继续..."; 
         cin.get();
-        system("clear"); 
+        system("clear"); // 清屏开始下一次输入
         loop_count++;
     }
     return 0;
